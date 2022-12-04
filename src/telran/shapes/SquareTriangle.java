@@ -12,36 +12,45 @@ public class SquareTriangle extends Square {
 
 	public String[] presentation(int offset) {
 		String[] res = new String[getHeight()];
-		char[][] middleSection = getMiddleSection();
-
-		for (int i = 0; i < res.length - 1; i++) {
-			res[i] = getOffset(offset) + new String(middleSection[i]);
-		}
-
-		res[res.length - 1] = getOffset(offset) + getSymbol().repeat(getWidth());
-		return res;
-
-	}
-
-	private char[][] getMiddleSection() {
-		char[][] res = new char[getHeight() - 1][getWidth()];
+		char[][] triangleMatrix = getTriangle();
+		String strOffset = getOffset(offset);
 		for (int i = 0; i < res.length; i++) {
-			res[i] = getMiddleLine(i);
+			res[i] = strOffset + new String(triangleMatrix[i]);
 		}
 		return res;
 	}
 
-	private char[] getMiddleLine(int index) {
+	private char[][] getTriangle() {
+		char[][] res = getVerticalLine();
+		int width = getWidth();
+		int index;
+		for (int i = 0; i < res.length - 1; i++) {
+			index = isLeftDiagonal ? i : width - i - 1;
+			addSymbolAtIndex(res[i], index);
+		}
+		res[width - 1] = getLine();
+		return res;
+	}
+
+	private char[] getLine() {
 		char[] res = new char[getWidth()];
-		char symbol = getSymbol().charAt(0);
-		Arrays.fill(res, ' ');
-		int[] indexes = isLeftDiagonal ? new int[] { 0, index } : new int[] { getWidth() - index - 1, getWidth() - 1 };
-		for (int ind : indexes) {
-			res[ind] = symbol;
+		Arrays.fill(res, getSymbol().charAt(0));
+		return res;
+	}
+
+	private char[][] getVerticalLine() {
+		char[][] res = new char[getHeight()][getWidth()];
+		int index = isLeftDiagonal ? 0 : getWidth() - 1;
+		for (int i = 0; i < res.length; i++) {
+			Arrays.fill(res[i], ' ');
+			addSymbolAtIndex(res[i], index);
 		}
 		return res;
 	}
 
+	private void addSymbolAtIndex(char[] arr, int index) {
+		arr[index] = getSymbol().charAt(0);
+	}
 
 	public boolean getIsLeftDiagonal() {
 		return isLeftDiagonal;
