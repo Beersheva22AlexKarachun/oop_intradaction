@@ -15,7 +15,6 @@ class CipherTest {
 		String binaryCode = "01";
 		BaseCipher hexCipher = new BaseCipher(16);
 		BaseCipher binaryCipher = new BaseCipher(2);
-		// Method "setKey" is used only for tests
 		hexCipher.setKey(hexCode);
 		binaryCipher.setKey(binaryCode);
 

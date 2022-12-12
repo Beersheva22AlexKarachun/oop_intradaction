@@ -1,7 +1,5 @@
 package telran.cipher;
 
-import java.util.Arrays;
-
 public class BaseCipher {
 	private static final int FIRST_ASCII_CODE = 33;
 	private static final int LAST_ASCII_CODE = 126;
@@ -9,20 +7,11 @@ public class BaseCipher {
 	private static final int MAX_LENGHT = LAST_ASCII_CODE - FIRST_ASCII_CODE + 1;
 	private int radix;
 	private String key;
-	private int[] symbolsValue = new int[MAX_LENGHT];
 
 	public BaseCipher(int length) {
 		length = checkLenght(length);
 		this.key = generateUniqueKey(length);
 		this.radix = length;
-		fillSymbolsValue();
-	}
-
-	private void fillSymbolsValue() {
-		Arrays.fill(symbolsValue, -1);
-		for (int i = 0; i < radix; i++) {
-			symbolsValue[key.charAt(i) - FIRST_ASCII_CODE] = i;
-		}
 	}
 
 	private String generateUniqueKey(int lenght) {
@@ -50,14 +39,22 @@ public class BaseCipher {
 		return lenght;
 	}
 
+	private int getNdigits(int number) {
+		int res = 0;
+		do {
+			number /= radix;
+			res++;
+		} while (number != 0);
+		return res;
+	}
+
 	/**
 	 * 
 	 * @param number
 	 * @return String presentation comprising of the symbols from the generated key
 	 */
 	public String cipher(int number) {
-		int resLenght = number == 0 ? 1 : (int) (Math.log(number) / Math.log(radix)) + 1;
-		char[] res = new char[resLenght];
+		char[] res = new char[getNdigits(number)];
 		for (int i = 0; i < res.length; i++) {
 			int remainder = number % radix;
 			res[res.length - i - 1] = key.charAt(remainder);
@@ -87,13 +84,8 @@ public class BaseCipher {
 	}
 
 	private Integer addPlace(Integer number, char symbol, int place) {
-		int value = getSymbolValue(symbol);
-		;
-		return number + (value * (int) Math.pow(radix, place));
-	}
-
-	private int getSymbolValue(char symbol) {
-		return symbolsValue[(int) symbol - FIRST_ASCII_CODE];
+		int value = key.indexOf(symbol);
+		return number + value * (int) Math.pow(radix, place);
 	}
 
 	/**
@@ -137,12 +129,11 @@ public class BaseCipher {
 	/**
 	 * This method have been created only for tests
 	 * 
-	 * @param str
+	 * @param key
 	 */
-	public void setKey(String str) {
-		this.key = str;
-		this.radix = str.length();
-		fillSymbolsValue();
+	public void setKey(String key) {
+		this.key = key;
+		this.radix = key.length();
 	}
 
 }
