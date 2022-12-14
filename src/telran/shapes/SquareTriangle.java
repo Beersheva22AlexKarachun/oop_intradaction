@@ -9,51 +9,33 @@ public class SquareTriangle extends Square {
 		super(size);
 		this.isLeftDiagonal = isLeftDiagonal;
 	}
-
+	@Override
 	public String[] presentation(int offset) {
+		int height = getHeight();
+		
+		char[][] presentationBuffer = new char[height - 1][offset + height];
+		fillBuffer(presentationBuffer, offset);
+		return getLines(presentationBuffer, offset);
+		
+	}
+	private String[] getLines(char[][] buffer, int offset) {
 		String[] res = new String[getHeight()];
-		char[][] triangleMatrix = getTriangle();
-		String strOffset = getOffset(offset);
-		for (int i = 0; i < res.length; i++) {
-			res[i] = strOffset + new String(triangleMatrix[i]);
+		for(int i = 0; i < buffer.length; i++) {
+			res[i] = new String(buffer[i]);
 		}
+		res[res.length - 1] = getLine(offset);
 		return res;
 	}
-
-	private char[][] getTriangle() {
-		char[][] res = getVerticalLine();
-		int width = getWidth();
-		int index;
-		for (int i = 0; i < res.length - 1; i++) {
-			index = isLeftDiagonal ? i : width - i - 1;
-			addSymbolAtIndex(res[i], index);
+	private void fillBuffer(char[][] buffer, int offset) {
+		int edgePos = isLeftDiagonal ? offset : buffer[0].length - 1;
+		char symbol = getSymbol().charAt(0);
+		for (int i = 0; i < buffer.length; i++) {
+			Arrays.fill(buffer[i], ' ');
+			int diagonalPos = isLeftDiagonal ? edgePos + i : edgePos - i;
+			buffer[i][edgePos] = symbol;
+			buffer[i][diagonalPos] = symbol;
 		}
-		res[width - 1] = getLine();
-		return res;
+		
 	}
-
-	private char[] getLine() {
-		char[] res = new char[getWidth()];
-		Arrays.fill(res, getSymbol().charAt(0));
-		return res;
-	}
-
-	private char[][] getVerticalLine() {
-		char[][] res = new char[getHeight()][getWidth()];
-		int index = isLeftDiagonal ? 0 : getWidth() - 1;
-		for (int i = 0; i < res.length; i++) {
-			Arrays.fill(res[i], ' ');
-			addSymbolAtIndex(res[i], index);
-		}
-		return res;
-	}
-
-	private void addSymbolAtIndex(char[] arr, int index) {
-		arr[index] = getSymbol().charAt(0);
-	}
-
-	public boolean getIsLeftDiagonal() {
-		return isLeftDiagonal;
-	}
-
+	
 }

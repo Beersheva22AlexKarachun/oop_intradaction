@@ -4,7 +4,9 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Disabled;
 
+import telran.shapes.Canvas;
 import telran.shapes.Rectangle;
+import telran.shapes.Shape;
 import telran.shapes.Square;
 import telran.shapes.SquareLeftTriangle;
 import telran.shapes.SquareRightTriangle;
@@ -39,6 +41,7 @@ class ShapeTest {
 	}
 
 	@Test
+	@Disabled
 	void testSqaureTriangle() {
 		int size = 10;
 		int offset = 10;
@@ -47,9 +50,20 @@ class ShapeTest {
 		displayStrings(squareLeftTriangle.presentation(offset));
 		System.out.println();
 		displayStrings(squareRightTriangle.presentation(offset));
-		
+
 		squareLeftTriangle.setHeight(15);
 		displayStrings(squareLeftTriangle.presentation(offset));
+	}
+
+	@Test
+	void testCanvas() {
+		Shape[] shapes = {new Rectangle(10, 15), new Square(6), new SquareRightTriangle(11), new Rectangle(5, 22), new SquareLeftTriangle(16)};
+		
+		Shape canvas1 = new Canvas(5,6,shapes);
+		Shape canvas2 = new Canvas(10,15,shapes);
+		Canvas canvas3 = new Canvas(5,10, new Shape[] {canvas1, canvas2});
+		canvas3.setMargin(2);
+		displayStrings(canvas3.presentation(10));
 	}
 
 	public static void displayStrings(String[] strings) {
