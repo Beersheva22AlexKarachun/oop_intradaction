@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Disabled;
 
 import telran.shapes.Canvas;
+import telran.shapes.Canvas1;
 import telran.shapes.Rectangle;
 import telran.shapes.Shape;
 import telran.shapes.Square;
@@ -56,14 +57,31 @@ class ShapeTest {
 	}
 
 	@Test
+//	@Disabled
 	void testCanvas() {
-		Shape[] shapes = {new Rectangle(10, 15), new Square(6), new SquareRightTriangle(11), new Rectangle(5, 22), new SquareLeftTriangle(16)};
-		
-		Shape canvas1 = new Canvas(5,6,shapes);
-		Shape canvas2 = new Canvas(10,15,shapes);
-		Canvas canvas3 = new Canvas(5,10, new Shape[] {canvas1, canvas2});
-		canvas3.setMargin(2);
+		Canvas canvas1 = new Canvas(5, 6,
+				new Shape[] { new Rectangle(3, 4), new SquareRightTriangle(6), new Square(8) });
+		Canvas canvas2 = new Canvas(10, 15,
+				new Shape[] { new SquareLeftTriangle(11), new Rectangle(5, 9), new SquareRightTriangle(6), canvas1 });
+		canvas1.setDirection("column");
+		Canvas canvas3 = new Canvas(7, 7, new Shape[] { canvas1, canvas2 });
+		canvas1.setMargin(1);
+		canvas2.setMargin(2);
+		canvas3.setMargin(3);
 		displayStrings(canvas3.presentation(10));
+		canvas3.setDirection("Column");
+		displayStrings(canvas3.presentation(10));
+	}
+	
+	@Test
+	@Disabled
+	void testCanvas1() {
+		Canvas1 canvas = new Canvas1(5, 6,
+				new Shape[] { new Rectangle(3, 4), new SquareRightTriangle(6), new Square(2) });
+		canvas.setMargin(1);
+		displayStrings(canvas.presentation(10));
+		canvas.setDirection("column");
+		displayStrings(canvas.presentation(10));
 	}
 
 	public static void displayStrings(String[] strings) {

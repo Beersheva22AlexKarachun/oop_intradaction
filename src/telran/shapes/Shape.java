@@ -20,7 +20,7 @@ public abstract class Shape {
 		Shape.symbol = symbol;
 	}
 
-	public int getWidth() {
+	public final int getWidth() {
 		return width;
 	}
 
@@ -35,8 +35,8 @@ public abstract class Shape {
 	public void setHeight(int height) {
 		this.height = height;
 	}
-	
-	protected String getOffset(int offset) {
+
+	protected final String getOffset(int offset) {
 		return " ".repeat(offset);
 	}
 

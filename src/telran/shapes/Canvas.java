@@ -14,10 +14,10 @@ public class Canvas extends Shape {
 
 	@Override
 	public String[] presentation(int offset) {
-		String[] res = getPresentationWithOutChange(0, offset);
+		String[] res = getPresentationWithOutChange(shapes[0], offset);
 		offset = isDirectionRow() ? margin : offset;
 		for (int i = 1; i < shapes.length; i++) {
-			String[] presentation = getPresentationWithOutChange(i, offset);
+			String[] presentation = getPresentationWithOutChange(shapes[i], offset);
 			res = joinArrays(res, presentation);
 		}
 		return res;
@@ -27,21 +27,28 @@ public class Canvas extends Shape {
 		return direction.equals(ROW);
 	}
 
-	private String[] getPresentationWithOutChange(int i, int offset) {
-		int savedValue = isDirectionRow() ? shapes[i].getHeight() : shapes[i].getWidth();
-		if (isDirectionRow())
-			shapes[i].setHeight(getHeight());
-		else
-			shapes[i].setWidth(getWidth());
+	private String[] getPresentationWithOutChange(Shape shape, int offset) {
+		String savedDirection = (shape instanceof Canvas) ? ((Canvas) shape).getDirection() : null;
+		int savedValue = isDirectionRow() ? shape.getHeight() : shape.getWidth();
+		int newValue = isDirectionRow() ? getHeight() : getWidth();
 
-		String[] presentation = shapes[i].presentation(offset);
-
-		if (isDirectionRow())
-			shapes[i].setHeight(savedValue);
-		else
-			shapes[i].setWidth(savedValue);
+		castShape(shape, newValue, getDirection());
+		String[] presentation = shape.presentation(offset);
+		castShape(shape, savedValue, savedDirection);
 
 		return presentation;
+	}
+
+	private void castShape(Shape shape, int newValue, String direction) {
+		if (isDirectionRow()) {
+			shape.setHeight(newValue);
+		} else {
+			shape.setWidth(newValue);
+		}
+
+		if (shape instanceof Canvas) {
+			((Canvas) shape).setDirection(direction);
+		}
 	}
 
 	public String getDirection() {
