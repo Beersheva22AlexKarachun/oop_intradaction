@@ -1,6 +1,8 @@
 package telran.util;
 
+import java.util.Arrays;
 import java.util.Comparator;
+import java.util.function.Predicate;
 
 public class MyArrays {
 	public static <T> void sort(T[] objects, Comparator<T> comparator) {
@@ -45,6 +47,55 @@ public class MyArrays {
 		T tmp = objects[i];
 		objects[i] = objects[j];
 		objects[j] = tmp;
+	}
+
+	public static <T> T[] filter(T[] array, Predicate<T> predicate) {
+		int countPredicate = getCountPredicate(array, predicate);
+
+		T[] res = Arrays.copyOf(array, countPredicate);
+		int index = 0;
+		for (T element : array) {
+			if (predicate.test(element)) {
+				res[index++] = element;
+			}
+		}
+
+		return res;
+	}
+
+	private static <T> int getCountPredicate(T[] array, Predicate<T> predicate) {
+		int res = 0;
+		for (T element : array) {
+			if (predicate.test(element)) {
+				res++;
+			}
+		}
+		return res;
+	}
+
+	public static <T> T[] removeIf(T[] array, Predicate<T> predicate) {
+		return filter(array, predicate.negate());
+	}
+
+	public static <T> T[] removeRepeated(T[] array) {
+		T[] res = Arrays.copyOf(array, array.length);
+		Arrays.fill(res, null);
+		int i = 0;
+		while (array.length > 0) {
+			res[i++] = array[0];
+			array = removeIf(array, x -> contains(res, x));
+		}
+		return Arrays.copyOf(res, i);
+	}
+
+	public static <T> boolean contains(T[] array, T pattern) {
+		boolean res = false;
+		int i = 0;
+		while (i < array.length && !res) {
+			res = array[i] != null ? array[i].equals(pattern) : pattern == null;
+			i++;
+		}
+		return res;
 	}
 
 }
