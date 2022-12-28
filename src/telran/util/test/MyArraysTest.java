@@ -2,6 +2,7 @@ package telran.util.test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.function.Predicate;
 
@@ -23,7 +24,7 @@ class MyArraysTest {
 		sort(strings, new StringLengthComparator());
 		assertArrayEquals(expected, strings);
 		sort(ar, (a, b) -> a - b);
-
+ArrayList.class.
 	}
 
 	@Test
@@ -46,7 +47,7 @@ class MyArraysTest {
 		assertEquals(binarySearch(numbers, 3, new intComparator()), 2);
 		assertEquals(binarySearch(strings, "45", new StringLengthComparator()), 2);
 
-//		assertEquals(MyArrays.binarySearch(array, new char[] {'2', '3'}, new ArrayLengthComparator<Character>()), 0);
+//		assertEquals(binarySearch(array, new char[] {'2', '3'}, new ArrayLengthComparator<Character>()), 0);
 		assertEquals(binarySearch(numbers, 0, new intComparator()), -1);
 		assertEquals(binarySearch(strings, "12345", new StringLengthComparator()), -6);
 

@@ -8,9 +8,9 @@ public class EvenOddComparator implements Comparator<Integer> {
 	public int compare(Integer o1, Integer o2) {
 		int res = 0;
 		if (isEven(o1)) {
-			res = isEven(o2) ? o1 - o2 : -1;
+			res = isEven(o2) ? Integer.compare(o1, o2): -1;
 		} else {
-			res = isEven(o2) ? 1 : o2 - o1;
+			res = isEven(o2) ? 1 : Integer.compare(o2, o1);
 		}
 		return res;
 	}

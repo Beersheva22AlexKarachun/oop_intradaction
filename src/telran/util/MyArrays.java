@@ -10,7 +10,6 @@ public class MyArrays {
 		do {
 			length--;
 		} while (moveMaxAtEnd(objects, length, comparator));
-
 	}
 
 	public static <T> int binarySearch(T[] array, T searchedItem, Comparator<T> comp) {
@@ -19,10 +18,10 @@ public class MyArrays {
 		int middle = right / 2;
 
 		while (left <= right) {
-			int compareRes = comp.compare(array[middle], searchedItem);
-			if (compareRes > 0) {
+			int сomparisonRes = comp.compare(array[middle], searchedItem);
+			if (сomparisonRes > 0) {
 				right = middle - 1;
-			} else if (compareRes < 0) {
+			} else if (сomparisonRes < 0) {
 				left = middle + 1;
 			} else {
 				return middle;
@@ -50,18 +49,29 @@ public class MyArrays {
 	}
 
 	public static <T> T[] filter(T[] array, Predicate<T> predicate) {
-		int countPredicate = getCountPredicate(array, predicate);
-
-		T[] res = Arrays.copyOf(array, countPredicate);
+		T[] res = Arrays.copyOf(array, array.length);
 		int index = 0;
 		for (T element : array) {
 			if (predicate.test(element)) {
 				res[index++] = element;
 			}
 		}
-
-		return res;
+		return Arrays.copyOf(res, index);
 	}
+
+//	public static <T> T[] filter(T[] array, Predicate<T> predicate) {
+//		int countPredicate = getCountPredicate(array, predicate);
+//
+//		T[] res = Arrays.copyOf(array, countPredicate);
+//		int index = 0;
+//		for (T element : array) {
+//			if (predicate.test(element)) {
+//				res[index++] = element;
+//			}
+//		}
+//
+//		return res;
+//	}
 
 	private static <T> int getCountPredicate(T[] array, Predicate<T> predicate) {
 		int res = 0;
@@ -76,16 +86,17 @@ public class MyArrays {
 	public static <T> T[] removeIf(T[] array, Predicate<T> predicate) {
 		return filter(array, predicate.negate());
 	}
-
 	public static <T> T[] removeRepeated(T[] array) {
-		T[] res = Arrays.copyOf(array, array.length);
-		Arrays.fill(res, null);
-		int i = 0;
-		while (array.length > 0) {
-			res[i++] = array[0];
-			array = removeIf(array, x -> contains(res, x));
-		}
-		return Arrays.copyOf(res, i);
+		Object[] helper = new Object[array.length];
+		int[] index = { 0 };
+		return removeIf(array, element -> {
+			boolean res = true;
+			if (!contains(helper, element)) {
+				helper[index[0]++] = element;
+				res = false;
+			}
+			return res;
+		});
 	}
 
 	public static <T> boolean contains(T[] array, T pattern) {
