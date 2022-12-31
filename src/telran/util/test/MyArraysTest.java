@@ -24,7 +24,6 @@ class MyArraysTest {
 		sort(strings, new StringLengthComparator());
 		assertArrayEquals(expected, strings);
 		sort(ar, (a, b) -> a - b);
-ArrayList.class.
 	}
 
 	@Test
@@ -69,7 +68,7 @@ ArrayList.class.
 		String[] strArr = { "Hello", "World", "I", "Love", "Java", "wORLD", };
 		assertTrue(contains(strArr, "Hello"));
 		assertTrue(contains(strArr, "wORLD"));
-		assertTrue(contains(new String[] {null, "1", "2" }, null));
+		assertTrue(contains(new String[] { null, "1", "2" }, null));
 
 		assertFalse(contains(strArr, "1wORLD"));
 		assertFalse(contains(strArr, "WORLD"));

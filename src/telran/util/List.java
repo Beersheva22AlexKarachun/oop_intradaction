@@ -1,6 +1,6 @@
 package telran.util;
 
-public interface List<T> extends Collection<T> {
+public interface List<T> extends Collection<T>, Iterable<T> {
 	void add(int index, T element);
 
 	T remove(int index);
