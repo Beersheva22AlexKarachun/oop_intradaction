@@ -39,6 +39,15 @@ public class LinkedList<T> implements List<T> {
 		}
 	}
 
+	public LinkedList() {
+	};
+
+	public LinkedList(Collection<T> collection) {
+		for (T item : collection.toArray()) {
+			add(item);
+		}
+	}
+
 	@Override
 	public boolean add(T element) {
 		Node<T> node = getNewNode(element);
@@ -50,15 +59,6 @@ public class LinkedList<T> implements List<T> {
 			tail = node;
 		}
 		return true;
-	}
-
-	@Override
-	public boolean remove(T pattern) {
-		int index = indexOf(pattern);
-		if (index > -1) {
-			unlink(getNode(index));
-		}
-		return index > -1;
 	}
 
 	@Override
@@ -77,11 +77,6 @@ public class LinkedList<T> implements List<T> {
 	}
 
 	@Override
-	public boolean isEmpty() {
-		return size == 0;
-	}
-
-	@Override
 	public int size() {
 		return size;
 	}
@@ -91,10 +86,9 @@ public class LinkedList<T> implements List<T> {
 		if (ar.length < size) {
 			ar = Arrays.copyOf(ar, size);
 		}
-		Node<T> current = head;
+		Iterator<T> it = iterator();
 		for (int i = 0; i < size; i++) {
-			ar[i] = current.obj;
-			current = current.next;
+			ar[i] = it.next();
 		}
 		Arrays.fill(ar, size, ar.length, null);
 		return ar;
@@ -208,7 +202,7 @@ public class LinkedList<T> implements List<T> {
 			current = current.prev;
 			index--;
 		}
-		return index == -1 ? -1 : index;
+		return index;
 	}
 
 	@Override
@@ -227,14 +221,15 @@ public class LinkedList<T> implements List<T> {
 	@SuppressWarnings("unchecked")
 	public T[] toArray() {
 		T[] array = (T[]) new Object[size];
-		for (int i = 0; i < array.length; i++) {
-			array[i] = getNode(i).obj;
+		Iterator<T> it = iterator();
+		for (int i = 0; i < size; i++) {
+			array[i] = it.next();
 		}
 		return array;
 	}
 
-	private boolean isEqual(T item1, T item2) {
-		return item1 == null ? item1 == item2 : item1.equals(item2);
+	@Override
+	public void clear() {
+		removeIf(x -> true);
 	}
-
 }

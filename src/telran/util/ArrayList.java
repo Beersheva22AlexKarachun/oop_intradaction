@@ -36,6 +36,11 @@ public class ArrayList<T> implements List<T> {
 		this(DEFAULT_CAPACITY);
 	}
 
+	public ArrayList(Collection<T> collection) {
+		size = collection.size();
+		array = Arrays.copyOf(collection.toArray(), size);
+	}
+
 	@Override
 	public boolean add(T element) {
 		checkSize();
@@ -103,9 +108,12 @@ public class ArrayList<T> implements List<T> {
 		return indexOf(item) != -1;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public T[] toArray() {
-		return Arrays.copyOf(array, size);
+		T[] res = (T[]) new Object[size];
+		System.arraycopy(array, 0, res, 0, size);
+		return res;
 	}
 
 	@Override
@@ -137,10 +145,6 @@ public class ArrayList<T> implements List<T> {
 		return res;
 	}
 
-	private boolean isEqual(T item1, T item2) {
-		return item1 == null ? item1 == item2 : item1.equals(item2);
-	}
-
 	@Override
 	public int lastIndexOf(T pattern) {
 		int res = -1, i = size - 1;
@@ -168,4 +172,9 @@ public class ArrayList<T> implements List<T> {
 		return new ArrayListIterator();
 	}
 
+	@Override
+	public void clear() {
+		Arrays.fill(array, null);
+		size = 0;
+	}
 }

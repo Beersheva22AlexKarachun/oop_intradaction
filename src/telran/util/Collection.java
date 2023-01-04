@@ -9,7 +9,9 @@ public interface Collection<T> extends Iterable<T> {
 
 	boolean removeIf(Predicate<T> predicate);
 
-	boolean isEmpty();
+	default boolean isEmpty() {
+		return size() == 0;
+	};
 
 	int size();
 
@@ -29,4 +31,10 @@ public interface Collection<T> extends Iterable<T> {
 	 *         of memory will be filled by null's
 	 */
 	T[] toArray(T[] ar);
+
+	void clear();
+
+	default boolean isEqual(T item1, T item2) {
+		return item1 == null ? item1 == item2 : item1.equals(item2);
+	}
 }

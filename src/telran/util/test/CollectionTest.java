@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -16,12 +17,11 @@ import telran.util.*;
 public abstract class CollectionTest {
 	protected Integer[] numbers = { 10, 100, -5, 134, 280, 120, 15 };
 	protected Integer[] ar = new Integer[numbers.length + 100];
-	protected Collection<Integer> collection;
 	protected Integer[] empty = {};
+	protected Collection<Integer> collection;
 
 	@BeforeEach
 	void setUp() throws Exception {
-
 		for (Integer num : numbers) {
 			collection.add(num);
 		}
@@ -31,11 +31,20 @@ public abstract class CollectionTest {
 
 	abstract void testIterator();
 
+	@SuppressWarnings("unchecked")
+	@Test
+	void testConstructorCopy() throws InstantiationException, IllegalAccessException, IllegalArgumentException,
+			InvocationTargetException, NoSuchMethodException, SecurityException {
+		Collection<Integer> copiedCollection = collection.getClass().getConstructor(Collection.class)
+				.newInstance(collection);
+		assertArrayEquals(collection.toArray(), copiedCollection.toArray());
+	}
+
 	@Test
 	void testRemove() {
 		Integer[] expected = { 10, 100, -5, 280, 120, 15 };
 		assertTrue(collection.remove((Integer) 134));
-		assertArrayEquals(expected, collection.toArray(empty));
+		assertArrayEquals(expected, collection.toArray());
 		assertFalse(collection.remove((Integer) 134));
 	}
 
@@ -43,7 +52,7 @@ public abstract class CollectionTest {
 	void testRemoveIf() {
 		Integer[] expected = { -5, 15 };
 		assertTrue(collection.removeIf(n -> n % 2 == 0));
-		assertArrayEquals(expected, collection.toArray(empty));
+		assertArrayEquals(expected, collection.toArray());
 		assertFalse(collection.removeIf(n -> n % 2 == 0));
 		assertTrue(collection.removeIf(n -> true));
 		assertTrue(collection.isEmpty());
@@ -80,6 +89,14 @@ public abstract class CollectionTest {
 			assertNull(ar[i]);
 		}
 
+		assertArrayEquals(collection.toArray(), numbers);
 	}
 
+	@Test
+	void testClear() {
+		collection.clear();
+		Object[] array = collection.toArray();
+		assertFalse(collection.iterator().hasNext());
+		assertEquals(0, array.length);
+	}
 }
