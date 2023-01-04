@@ -2,9 +2,10 @@ package telran.util;
 
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 import java.util.function.Predicate;
 
-public class ArrayList<T> implements List<T>, Iterable<T> {
+public class ArrayList<T> implements List<T> {
 	static final int DEFAULT_CAPACITY = 16;
 	private T[] array;
 	private int size;
@@ -14,11 +15,14 @@ public class ArrayList<T> implements List<T>, Iterable<T> {
 
 		@Override
 		public boolean hasNext() {
-			return index + 1 < size;
+			return index < size;
 		}
 
 		@Override
 		public T next() {
+			if (!hasNext()) {
+				throw new NoSuchElementException();
+			}
 			return array[index++];
 		}
 	}
@@ -70,19 +74,18 @@ public class ArrayList<T> implements List<T>, Iterable<T> {
 
 	@Override
 	public boolean removeIf(Predicate<T> predicate) {
-		int shift = 0;
-		for (int i = 0; i < size; i++) {
+		int oldSize = size;
+		int tIndex = 0;
+		for (int i = 0; i < oldSize; i++) {
 			if (predicate.test(array[i])) {
-				shift++;
+				size--;
 			} else {
-				array[i - shift] = array[i];
+				array[tIndex++] = array[i];
 			}
 		}
-		if (shift != 0) {
-			Arrays.fill(array, size - shift, size - 1, null);
-			size -= shift;
-		}
-		return shift != 0;
+		Arrays.fill(array, size, oldSize, null);
+		return oldSize > size;
+
 	}
 
 	@Override
@@ -122,11 +125,6 @@ public class ArrayList<T> implements List<T>, Iterable<T> {
 		System.arraycopy(array, index, array, index + 1, size - index);
 		size++;
 		array[index] = element;
-	}
-
-	private void checkIndex(int index, int min, int max) {
-		if (index > max || index < min)
-			throw new IndexOutOfBoundsException(String.format("Index %1$s out of bounds for size %2$s", index, size));
 	}
 
 	@Override
