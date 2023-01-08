@@ -3,9 +3,8 @@ package telran.util;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
-import java.util.function.Predicate;
 
-public class LinkedList<T> implements List<T> {
+public class LinkedList<T> extends AbstractCollection<T> implements List<T> {
 	private static class Node<T> {
 		T obj;
 		Node<T> prev;
@@ -18,10 +17,10 @@ public class LinkedList<T> implements List<T> {
 
 	private Node<T> head;
 	private Node<T> tail;
-	private int size;
 
 	private class LinkedListIterator implements Iterator<T> {
 		Node<T> current = head;
+		private boolean flNext = false;
 
 		@Override
 		public boolean hasNext() {
@@ -35,7 +34,18 @@ public class LinkedList<T> implements List<T> {
 			}
 			T obj = current.obj;
 			current = current.next;
+			flNext = true;
 			return obj;
+		}
+
+		@Override
+		public void remove() {
+			if (!flNext) {
+				throw new IllegalStateException();
+			}
+			Node<T> removedNode = current == null ? tail : current.prev;
+			unlink(removedNode);
+			flNext = false;
 		}
 	}
 
@@ -43,10 +53,36 @@ public class LinkedList<T> implements List<T> {
 	};
 
 	public LinkedList(Collection<T> collection) {
-		for (T item : collection.toArray()) {
-			add(item);
-		}
+		super(collection);
 	}
+
+	/************************************************************************************/
+	// Comments only for LinkedList task of loop existence
+	public void setNext(int index1, int index2) {
+		// sets next of element at index1 to element at index2
+		checkIndex(index1, 0, size - 1);
+		checkIndex(index2, 0, size - 1);
+		if (index1 < index2) {
+			throw new IllegalArgumentException();
+		}
+		getNode(index1).next = getNode(index2);
+	}
+
+	public boolean hasLoop() {
+		Node<T> oneStep = head;
+		Node<T> twoStep = head;
+		boolean res = false;
+		while (!res && twoStep != null && twoStep.next != null) {
+			oneStep = oneStep.next;
+			twoStep = twoStep.next.next;
+			if (oneStep == twoStep) {
+				res = true;
+			}
+		}
+		return res;
+	}
+
+	/*********************************************************************************************/
 
 	@Override
 	public boolean add(T element) {
@@ -59,39 +95,6 @@ public class LinkedList<T> implements List<T> {
 			tail = node;
 		}
 		return true;
-	}
-
-	@Override
-	public boolean removeIf(Predicate<T> predicate) {
-		int oldSize = size;
-		Node<T> current = head;
-		Node<T> next = null;
-		for (int i = 0; i < oldSize; i++) {
-			next = current.next;
-			if (predicate.test(current.obj)) {
-				unlink(current);
-			}
-			current = next;
-		}
-		return oldSize > size;
-	}
-
-	@Override
-	public int size() {
-		return size;
-	}
-
-	@Override
-	public T[] toArray(T[] ar) {
-		if (ar.length < size) {
-			ar = Arrays.copyOf(ar, size);
-		}
-		Iterator<T> it = iterator();
-		for (int i = 0; i < size; i++) {
-			ar[i] = it.next();
-		}
-		Arrays.fill(ar, size, ar.length, null);
-		return ar;
 	}
 
 	@Override
@@ -217,19 +220,4 @@ public class LinkedList<T> implements List<T> {
 		getNode(index).obj = element;
 	}
 
-	@Override
-	@SuppressWarnings("unchecked")
-	public T[] toArray() {
-		T[] array = (T[]) new Object[size];
-		Iterator<T> it = iterator();
-		for (int i = 0; i < size; i++) {
-			array[i] = it.next();
-		}
-		return array;
-	}
-
-	@Override
-	public void clear() {
-		removeIf(x -> true);
-	}
 }

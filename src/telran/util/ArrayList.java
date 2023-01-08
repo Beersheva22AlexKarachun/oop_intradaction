@@ -3,15 +3,14 @@ package telran.util;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
-import java.util.function.Predicate;
 
-public class ArrayList<T> implements List<T> {
+public class ArrayList<T> extends AbstractCollection<T> implements List<T> {
 	static final int DEFAULT_CAPACITY = 16;
 	private T[] array;
-	private int size;
 
 	private class ArrayListIterator implements Iterator<T> {
 		private int index = 0;
+		private boolean flNext;
 
 		@Override
 		public boolean hasNext() {
@@ -23,7 +22,17 @@ public class ArrayList<T> implements List<T> {
 			if (!hasNext()) {
 				throw new NoSuchElementException();
 			}
+			flNext = true;
 			return array[index++];
+		}
+
+		@Override
+		public void remove() {
+			if (!flNext) {
+				throw new IllegalStateException();
+			}
+			ArrayList.this.remove(--index);
+			flNext = false;
 		}
 	}
 
@@ -37,8 +46,10 @@ public class ArrayList<T> implements List<T> {
 	}
 
 	public ArrayList(Collection<T> collection) {
-		size = collection.size();
-		array = Arrays.copyOf(collection.toArray(), size);
+		this(collection.size());
+		for (T item : collection) {
+			this.add(item);
+		}
 	}
 
 	@Override
@@ -75,55 +86,6 @@ public class ArrayList<T> implements List<T> {
 			remove(index);
 		}
 		return index > -1;
-	}
-
-	@Override
-	public boolean removeIf(Predicate<T> predicate) {
-		int oldSize = size;
-		int tIndex = 0;
-		for (int i = 0; i < oldSize; i++) {
-			if (predicate.test(array[i])) {
-				size--;
-			} else {
-				array[tIndex++] = array[i];
-			}
-		}
-		Arrays.fill(array, size, oldSize, null);
-		return oldSize > size;
-
-	}
-
-	@Override
-	public boolean isEmpty() {
-		return size == 0;
-	}
-
-	@Override
-	public int size() {
-		return size;
-	}
-
-	@Override
-	public boolean contains(T item) {
-		return indexOf(item) != -1;
-	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	public T[] toArray() {
-		T[] res = (T[]) new Object[size];
-		System.arraycopy(array, 0, res, 0, size);
-		return res;
-	}
-
-	@Override
-	public T[] toArray(T[] ar) {
-		if (ar.length < size) {
-			ar = Arrays.copyOf(array, size);
-		}
-		System.arraycopy(array, 0, ar, 0, size);
-		Arrays.fill(ar, size, ar.length, null);
-		return ar;
 	}
 
 	@Override
@@ -172,9 +134,4 @@ public class ArrayList<T> implements List<T> {
 		return new ArrayListIterator();
 	}
 
-	@Override
-	public void clear() {
-		Arrays.fill(array, null);
-		size = 0;
-	}
 }

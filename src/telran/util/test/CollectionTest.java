@@ -4,10 +4,12 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
+import java.util.Iterator;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -33,18 +35,17 @@ public abstract class CollectionTest {
 
 	@SuppressWarnings("unchecked")
 	@Test
-	void testConstructorCopy() throws InstantiationException, IllegalAccessException, IllegalArgumentException,
-			InvocationTargetException, NoSuchMethodException, SecurityException {
+	void testConstructorCopy() throws Exception {
 		Collection<Integer> copiedCollection = collection.getClass().getConstructor(Collection.class)
 				.newInstance(collection);
-		assertArrayEquals(collection.toArray(), copiedCollection.toArray());
+		assertArrayEquals(collection.toArray(empty), copiedCollection.toArray(empty));
 	}
 
 	@Test
 	void testRemove() {
 		Integer[] expected = { 10, 100, -5, 280, 120, 15 };
 		assertTrue(collection.remove((Integer) 134));
-		assertArrayEquals(expected, collection.toArray());
+		assertArrayEquals(expected, collection.toArray(empty));
 		assertFalse(collection.remove((Integer) 134));
 	}
 
@@ -52,7 +53,7 @@ public abstract class CollectionTest {
 	void testRemoveIf() {
 		Integer[] expected = { -5, 15 };
 		assertTrue(collection.removeIf(n -> n % 2 == 0));
-		assertArrayEquals(expected, collection.toArray());
+		assertArrayEquals(expected, collection.toArray(empty));
 		assertFalse(collection.removeIf(n -> n % 2 == 0));
 		assertTrue(collection.removeIf(n -> true));
 		assertTrue(collection.isEmpty());
@@ -79,7 +80,6 @@ public abstract class CollectionTest {
 
 	@Test
 	void testToArray() {
-
 		Arrays.fill(ar, 10);
 		assertTrue(ar == collection.toArray(ar));
 		for (int i = 0; i < numbers.length; i++) {
@@ -88,15 +88,33 @@ public abstract class CollectionTest {
 		for (int i = numbers.length; i < ar.length; i++) {
 			assertNull(ar[i]);
 		}
-
-		assertArrayEquals(collection.toArray(), numbers);
 	}
 
 	@Test
 	void testClear() {
 		collection.clear();
-		Object[] array = collection.toArray();
 		assertFalse(collection.iterator().hasNext());
-		assertEquals(0, array.length);
+		assertEquals(0, collection.size());
+	}
+
+	@Test
+	void removeIteratorTest() {
+		final Iterator<Integer> it = collection.iterator();
+		assertThrowsExactly(IllegalStateException.class, () -> it.remove());
+		Integer num = it.next();
+		assertTrue(collection.contains(num));
+		it.remove();
+		assertFalse(collection.contains(num));
+
+		assertThrowsExactly(IllegalStateException.class, () -> it.remove());
+		Iterator<Integer> it1 = collection.iterator();
+
+		while (it1.hasNext()) {
+			num = it1.next();
+		}
+		assertTrue(collection.contains(num));
+		it1.remove();
+		assertFalse(collection.contains(num));
+
 	}
 }

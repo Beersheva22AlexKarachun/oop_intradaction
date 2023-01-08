@@ -77,11 +77,7 @@ public abstract class ListTest extends CollectionTest {
 
 	@Test
 	void testGet() {
-		try {
-			list.get(1000);
-			fail("should be exception");
-		} catch (IndexOutOfBoundsException e) {
-		}
+		assertThrowsExactly(IndexOutOfBoundsException.class, () -> list.get(1000));
 		assertEquals(10, list.get(0));
 	}
 

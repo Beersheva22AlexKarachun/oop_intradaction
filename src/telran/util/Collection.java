@@ -1,5 +1,7 @@
 package telran.util;
 
+import java.util.Arrays;
+import java.util.Iterator;
 import java.util.function.*;
 
 public interface Collection<T> extends Iterable<T> {
@@ -7,7 +9,16 @@ public interface Collection<T> extends Iterable<T> {
 
 	boolean remove(T pattern);
 
-	boolean removeIf(Predicate<T> predicate);
+	default boolean removeIf(Predicate<T> predicate) {
+		Iterator<T> it = iterator();
+		int oldSize = size();
+		while (it.hasNext()) {
+			if (predicate.test(it.next())) {
+				it.remove();
+			}
+		}
+		return oldSize > size();
+	}
 
 	default boolean isEmpty() {
 		return size() == 0;
@@ -16,8 +27,6 @@ public interface Collection<T> extends Iterable<T> {
 	int size();
 
 	boolean contains(T pattern);
-
-	T[] toArray();
 
 	/*******************************/
 	/**
@@ -30,11 +39,20 @@ public interface Collection<T> extends Iterable<T> {
 	 *         then all elements of the Collection will be put in the array and rest
 	 *         of memory will be filled by null's
 	 */
-	T[] toArray(T[] ar);
+
+	public default T[] toArray(T[] ar) {
+		int size = size();
+		if (ar.length < size) {
+			ar = Arrays.copyOf(ar, size);
+		}
+		Iterator<T> it = iterator();
+		for (int i = 0; i < size; i++) {
+			ar[i] = it.next();
+		}
+		Arrays.fill(ar, size, ar.length, null);
+		return ar;
+	}
 
 	void clear();
 
-	default boolean isEqual(T item1, T item2) {
-		return item1 == null ? item1 == item2 : item1.equals(item2);
-	}
 }
