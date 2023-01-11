@@ -90,7 +90,7 @@ public abstract class ListTest extends CollectionTest {
 	@Test
 	@Override
 	void testIterator() {
-		Integer actual[] = new Integer[numbers.length];
+		Integer[] actual = new Integer[numbers.length];
 		int index = 0;
 		Iterator<Integer> it = list.iterator();
 		while (it.hasNext()) {

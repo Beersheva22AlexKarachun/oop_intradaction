@@ -20,9 +20,7 @@ public interface Collection<T> extends Iterable<T> {
 		return oldSize > size();
 	}
 
-	default boolean isEmpty() {
-		return size() == 0;
-	};
+	boolean isEmpty();
 
 	int size();
 
@@ -53,6 +51,11 @@ public interface Collection<T> extends Iterable<T> {
 		return ar;
 	}
 
-	void clear();
-
+	public default void clear() {
+		Iterator<T> it = iterator();
+		while (it.hasNext()) {
+			it.next();
+			it.remove();
+		}
+	}
 }

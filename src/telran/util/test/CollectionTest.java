@@ -38,7 +38,7 @@ public abstract class CollectionTest {
 	void testConstructorCopy() throws Exception {
 		Collection<Integer> copiedCollection = collection.getClass().getConstructor(Collection.class)
 				.newInstance(collection);
-		assertArrayEquals(collection.toArray(empty), copiedCollection.toArray(empty));
+		assertTrue(collection.equals(copiedCollection));
 	}
 
 	@Test
@@ -61,19 +61,19 @@ public abstract class CollectionTest {
 	}
 
 	@Test
-	void testIsEmpty() {
+	final void testIsEmpty() {
 		assertFalse(collection.isEmpty());
 		collection.removeIf(n -> true);
 		assertTrue(collection.isEmpty());
 	}
 
 	@Test
-	void testSize() {
+	final void testSize() {
 		assertEquals(numbers.length, collection.size());
 	}
 
 	@Test
-	void testContains() {
+	final void testContains() {
 		assertTrue(collection.contains(numbers[0]));
 		assertFalse(collection.contains(Integer.MIN_VALUE));
 	}
@@ -95,6 +95,7 @@ public abstract class CollectionTest {
 		collection.clear();
 		assertFalse(collection.iterator().hasNext());
 		assertEquals(0, collection.size());
+		assertArrayEquals(collection.toArray(empty), empty);
 	}
 
 	@Test

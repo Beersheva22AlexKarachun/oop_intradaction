@@ -1,6 +1,5 @@
 package telran.util;
 
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
@@ -220,4 +219,26 @@ public class LinkedList<T> extends AbstractCollection<T> implements List<T> {
 		getNode(index).obj = element;
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+
+		boolean res = false;
+		LinkedList<T> other = (LinkedList<T>) obj;
+		res = size == other.size();
+		if (res) {
+			Iterator<T> it1 = this.iterator();
+			Iterator<T> it2 = other.iterator();
+			while (it1.hasNext() && res) {
+				res = it1.next().equals(it2.next());
+			}
+		}
+		return res;
+	}
 }

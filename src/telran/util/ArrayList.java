@@ -134,4 +134,25 @@ public class ArrayList<T> extends AbstractCollection<T> implements List<T> {
 		return new ArrayListIterator();
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+
+		boolean res = false;
+		ArrayList<T> other = (ArrayList<T>) obj;
+		res = size == other.size();
+		if (res) {
+			for (int i = 0; i < size; i++) {
+				res = get(i).equals(other.get(i));
+			}
+		}
+		return res;
+	}
+
 }

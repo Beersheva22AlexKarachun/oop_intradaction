@@ -1,7 +1,5 @@
 package telran.util;
 
-import java.util.Iterator;
-
 public abstract class AbstractCollection<T> implements Collection<T> {
 	protected int size;
 
@@ -19,22 +17,13 @@ public abstract class AbstractCollection<T> implements Collection<T> {
 	}
 
 	@Override
-	public int size() {
+	final public int size() {
 		return size;
 	}
 
 	@Override
-	public boolean isEmpty() {
+	final public boolean isEmpty() {
 
 		return size == 0;
-	}
-
-	@Override
-	public void clear() {
-		Iterator<T> it = iterator();
-		while (it.hasNext()) {
-			it.next();
-			it.remove();
-		}
 	}
 }
