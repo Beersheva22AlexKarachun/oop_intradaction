@@ -10,6 +10,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.Random;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,6 +18,12 @@ import org.junit.jupiter.api.Test;
 import telran.util.*;
 
 public abstract class CollectionTest {
+	protected Random random = new Random();
+	protected static final int N_RUNS = 100;
+	protected static final int N_NUMBERS = 1_000;
+	private static final int MIN = Integer.MIN_VALUE;
+	private static final int MAX = Integer.MAX_VALUE;
+
 	protected Integer[] numbers = { 10, 100, -5, 134, 280, 120, 15 };
 	protected Integer[] ar = new Integer[numbers.length + 100];
 	protected Integer[] empty = {};
@@ -76,22 +83,29 @@ public abstract class CollectionTest {
 	final void testContains() {
 		assertTrue(collection.contains(numbers[0]));
 		assertFalse(collection.contains(Integer.MIN_VALUE));
+		for (Integer number : numbers) {
+			assertTrue(collection.contains(number));
+		}
 	}
 
 	@Test
 	void testToArray() {
 		Arrays.fill(ar, 10);
 		assertTrue(ar == collection.toArray(ar));
-		for (int i = 0; i < numbers.length; i++) {
-			assertEquals(ar[i], numbers[i]);
+		Arrays.sort(ar, 0, collection.size());
+		Integer expected[] = Arrays.copyOf(numbers, numbers.length);
+		Arrays.sort(expected);
+		for (int i = 0; i < expected.length; i++) {
+			assertEquals(ar[i], expected[i]);
 		}
-		for (int i = numbers.length; i < ar.length; i++) {
+		for (int i = expected.length; i < ar.length; i++) {
 			assertNull(ar[i]);
 		}
 	}
 
 	@Test
 	void testClear() {
+		assertFalse(collection.isEmpty());
 		collection.clear();
 		assertFalse(collection.iterator().hasNext());
 		assertEquals(0, collection.size());
@@ -99,7 +113,7 @@ public abstract class CollectionTest {
 	}
 
 	@Test
-	void removeIteratorTest() {
+	void testRemoveIterator() {
 		final Iterator<Integer> it = collection.iterator();
 		assertThrowsExactly(IllegalStateException.class, () -> it.remove());
 		Integer num = it.next();
@@ -117,5 +131,19 @@ public abstract class CollectionTest {
 		it1.remove();
 		assertFalse(collection.contains(num));
 
+	}
+
+	protected Integer[] getRandomArray() {
+		Integer result[] = new Integer[N_NUMBERS];
+		for (int i = 0; i < N_NUMBERS; i++) {
+			result[i] = random.nextInt(MIN, MAX);
+		}
+		return result;
+	}
+
+	protected void fillCollection(Collection<Integer> set, Integer[] numbers) {
+		for (Integer num : numbers) {
+			set.add(num);
+		}
 	}
 }

@@ -14,10 +14,11 @@ public class HashSet<T> extends AbstractCollection<T> implements Set<T> {
 		int currentItIndex = 0;
 		Iterator<T> currentIt;
 		private boolean flNext;
+		int amount = 0;
 
 		@Override
 		public boolean hasNext() {
-			return hasNextInCurIt() ? true : getNextIndex() != hashTable.length;
+			return amount < size;
 		}
 
 		private boolean hasNextInCurIt() {
@@ -42,6 +43,7 @@ public class HashSet<T> extends AbstractCollection<T> implements Set<T> {
 				currentIt = hashTable[index++].iterator();
 			}
 			flNext = true;
+			amount++;
 			return currentIt.next();
 		}
 
@@ -53,9 +55,9 @@ public class HashSet<T> extends AbstractCollection<T> implements Set<T> {
 			currentIt.remove();
 			flNext = false;
 			size--;
+			amount--;
 			if (hashTable[currentItIndex].isEmpty()) {
 				hashTable[currentItIndex] = null;
-				currentIt = null;
 			}
 		}
 

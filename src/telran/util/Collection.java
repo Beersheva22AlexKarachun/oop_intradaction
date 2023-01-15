@@ -40,12 +40,12 @@ public interface Collection<T> extends Iterable<T> {
 
 	public default T[] toArray(T[] ar) {
 		int size = size();
+		int i = 0;
 		if (ar.length < size) {
 			ar = Arrays.copyOf(ar, size);
 		}
-		Iterator<T> it = iterator();
-		for (int i = 0; i < size; i++) {
-			ar[i] = it.next();
+		for (T item : this) {
+			ar[i++] = item;
 		}
 		Arrays.fill(ar, size, ar.length, null);
 		return ar;

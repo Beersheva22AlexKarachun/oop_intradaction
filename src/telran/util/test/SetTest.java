@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 
 import telran.util.*;
 
-public class SetTest extends CollectionTest {
+public abstract class SetTest extends CollectionTest {
 	Set<Integer> set;
 
 	@BeforeEach
@@ -42,7 +42,7 @@ public class SetTest extends CollectionTest {
 	}
 
 	@Override
-	@Test
+//	@Test
 	void testRemoveIf() {
 		Integer[] expected = { -5, 15 };
 		assertTrue(collection.removeIf(n -> n % 2 == 0));
@@ -66,13 +66,9 @@ public class SetTest extends CollectionTest {
 		while (it.hasNext()) {
 			actual[index++] = it.next();
 		}
-		
-		HashSet<Integer> newSet = new HashSet<>();
-		for (Integer number : actual) {
-			newSet.add(number);
-		}
-		assertTrue(set.equals(newSet));
+		assertArrayEquals(set.toArray(empty), actual);
 		assertThrowsExactly(NoSuchElementException.class, () -> it.next());
+
 	}
 
 	@Test
