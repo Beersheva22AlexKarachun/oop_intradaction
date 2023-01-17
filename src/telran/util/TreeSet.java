@@ -40,12 +40,7 @@ public class TreeSet<T> extends AbstractCollection<T> implements Sorted<T> {
 			prevNode = current;
 			flNext = true;
 
-			if (current.right != null) {
-				current = current.right;
-				current = getLeastNode(current);
-			} else {
-				current = getGreaterParent(current);
-			}
+			current = getNextNode(current);
 			return prevNode.obj;
 		}
 
@@ -96,6 +91,10 @@ public class TreeSet<T> extends AbstractCollection<T> implements Sorted<T> {
 		return node.parent;
 	}
 
+	private Node<T> getNextNode(Node<T> node) {
+		return node.right == null ? getGreaterParent(node) : getLeastNode(node.right);
+	}
+
 	@Override
 	public boolean add(T element) {
 		Node<T> newNode = new Node<T>(element);
@@ -131,7 +130,7 @@ public class TreeSet<T> extends AbstractCollection<T> implements Sorted<T> {
 	public boolean remove(T pattern) {
 		Node<T> removed = getNode(pattern);
 		boolean res = false;
-		if (removed != null) {
+		if (removed != null && comp.compare(pattern, removed.obj) == 0) {
 			res = true;
 			removeNode(removed);
 		}
@@ -195,18 +194,21 @@ public class TreeSet<T> extends AbstractCollection<T> implements Sorted<T> {
 		}
 	}
 
-	private Node<T> getNode(T pattern) {
+	private Node<T> getNode(T element) {
 		Node<T> current = root;
+		Node<T> parent = null;
 		int compRes;
-		while (current != null && (compRes = comp.compare(pattern, current.obj)) != 0) {
-			current = compRes > 0 ? current.right : current.left;
+		while (current != null && (compRes = comp.compare(element, current.obj)) != 0) {
+			parent = current;
+			current = compRes < 0 ? current.left : current.right;
 		}
-		return current;
+		return current == null ? parent : current;
 	}
 
 	@Override
 	public boolean contains(T pattern) {
-		return getNode(pattern) != null;
+		Node<T> node = getNode(pattern);
+		return node != null && comp.compare(pattern, node.obj) == 0;
 	}
 
 	@Override
@@ -239,14 +241,20 @@ public class TreeSet<T> extends AbstractCollection<T> implements Sorted<T> {
 
 	@Override
 	public T floor(T element) {
-		// TODO Auto-generated method stub
-		return null;
+		Node<T> node = getNode(element);
+		while (node != null && (comp.compare(node.obj, element) > 0)) {
+			node = node.parent;
+		}
+		return node == null ? null : node.obj;
 	}
 
 	@Override
 	public T ceiling(T element) {
-		// TODO Auto-generated method stub
-		return null;
+		Node<T> node = getNode(element);
+		while (node != null && (comp.compare(node.obj, element) < 0)) {
+			node = node.parent;
+		}
+		return node == null ? null : node.obj;
 	}
 
 	@Override
