@@ -3,8 +3,10 @@ package telran.util.test;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
 
 import java.util.Arrays;
+import java.util.NoSuchElementException;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -59,13 +61,13 @@ public abstract class SortedTest extends SetTest {
 	void firstTest() {
 		assertEquals((Integer) (-5), sorted.first());
 		sorted.clear();
-		assertNull(sorted.first());
+		assertThrowsExactly(NoSuchElementException.class, () -> sorted.first());
 	}
 
 	@Test
 	void lastTest() {
 		assertEquals((Integer) 280, sorted.last());
 		sorted.clear();
-		assertNull(sorted.last());
+		assertThrowsExactly(NoSuchElementException.class, () -> sorted.last());
 	}
 }
