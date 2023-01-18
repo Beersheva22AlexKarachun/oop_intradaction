@@ -17,14 +17,12 @@ public class TreeSet<T> extends AbstractCollection<T> implements Sorted<T> {
 	}
 
 	private class TreeSetIterator implements Iterator<T> {
-		private Node<T> current = root;
+		private Node<T> current;
 		private Node<T> prevNode = null;
 		private boolean flNext;
 
 		public TreeSetIterator() {
-			if (current != null) {
-				current = getLeastNode(current);
-			}
+			current = root != null ? getLeastNode(root) : root;
 		}
 
 		@Override
@@ -91,39 +89,39 @@ public class TreeSet<T> extends AbstractCollection<T> implements Sorted<T> {
 		return node.parent;
 	}
 
+	private Node<T> getLesserParent(Node<T> node) {
+		while (node.parent != null && node.parent.right != node) {
+			node = node.parent;
+		}
+		return node.parent;
+	}
+
 	private Node<T> getNextNode(Node<T> node) {
 		return node.right == null ? getGreaterParent(node) : getLeastNode(node.right);
 	}
 
 	@Override
 	public boolean add(T element) {
-		Node<T> newNode = new Node<T>(element);
-		Node<T> current = root;
-		if (current == null) {
-			root = newNode;
-		} else {
-			while (current.left != newNode && current.right != newNode) {
-				int compRes = comp.compare(element, current.obj);
-				if (compRes > 0) {
-					if (current.right == null) {
-						current.right = newNode;
-					} else {
-						current = current.right;
-					}
-				} else if (compRes < 0) {
-					if (current.left == null) {
-						current.left = newNode;
-					} else {
-						current = current.left;
-					}
+		boolean res = false;
+		Node<T> parent = getNode(element);
+		int compRes = 0;
+		if (parent == null || (compRes = comp.compare(element, parent.obj)) != 0) {
+			res = true;
+			size++;
+			Node<T> node = new Node<>(element);
+			node.parent = parent;
+			if (parent == null) {
+				root = node;
+			} else {
+				if (compRes < 0) {
+					parent.left = node;
 				} else {
-					return false;
+					parent.right = node;
 				}
 			}
-			newNode.parent = current;
 		}
-		size++;
-		return true;
+
+		return res;
 	}
 
 	@Override
@@ -144,7 +142,7 @@ public class TreeSet<T> extends AbstractCollection<T> implements Sorted<T> {
 		} else if (removed.left != null && removed.right != null) {
 			removeNodeWithTwoChildren(removed);
 		} else {
-			removeListNode(removed);
+			removeLineNode(removed);
 		}
 	}
 
@@ -161,7 +159,8 @@ public class TreeSet<T> extends AbstractCollection<T> implements Sorted<T> {
 
 	private void removeNodeWithTwoChildren(Node<T> removed) {
 		Node<T> least = getLeastNode(removed.right);
-		removeListNode(least);
+		Node<T> parent = removed.parent;
+		removeLineNode(least);
 
 		least.parent = removed.parent;
 		least.left = removed.left;
@@ -171,17 +170,16 @@ public class TreeSet<T> extends AbstractCollection<T> implements Sorted<T> {
 		if (removed.right != null) {
 			removed.right.parent = least;
 		}
-		if (removed.parent != null) {
-			if (comp.compare(removed.parent.obj, removed.obj) > 0) {
-				removed.parent.left = least;
+		if (parent != null) {
+			if (comp.compare(parent.obj, removed.obj) > 0) {
+				parent.left = least;
 			} else {
-				removed.parent.right = least;
+				parent.right = least;
 			}
-			;
 		}
 	}
 
-	private void removeListNode(Node<T> removed) {
+	private void removeLineNode(Node<T> removed) {
 		Node<T> parent = removed.parent;
 		Node<T> child = removed.left != null ? removed.left : removed.right;
 		if (comp.compare(removed.obj, parent.obj) > 0) {
@@ -242,8 +240,8 @@ public class TreeSet<T> extends AbstractCollection<T> implements Sorted<T> {
 	@Override
 	public T floor(T element) {
 		Node<T> node = getNode(element);
-		while (node != null && (comp.compare(node.obj, element) > 0)) {
-			node = node.parent;
+		if (node != null && comp.compare(element, node.obj) < 0) {
+			node = getLesserParent(node);
 		}
 		return node == null ? null : node.obj;
 	}
@@ -251,20 +249,25 @@ public class TreeSet<T> extends AbstractCollection<T> implements Sorted<T> {
 	@Override
 	public T ceiling(T element) {
 		Node<T> node = getNode(element);
-		while (node != null && (comp.compare(node.obj, element) < 0)) {
-			node = node.parent;
+		if (node != null && comp.compare(element, node.obj) > 0) {
+			node = getGreaterParent(node);
 		}
 		return node == null ? null : node.obj;
 	}
 
 	@Override
 	public T first() {
-		return root != null ? getLeastNode(root).obj : null;
+		if (isEmpty()) {
+			throw new NoSuchElementException();
+		}
+		return getLeastNode(root).obj;
 	}
 
 	@Override
 	public T last() {
-		return root != null ? getLargestNode(root).obj : null;
+		if (isEmpty()) {
+			throw new NoSuchElementException();
+		}
+		return getLargestNode(root).obj;
 	}
-
 }
