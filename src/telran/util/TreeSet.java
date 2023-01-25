@@ -51,6 +51,10 @@ public class TreeSet<T> extends AbstractCollection<T> implements Sorted<T> {
 		}
 	}
 
+	private static final String SYMBOL = " ";
+
+	private static final int NUMBER_SYMBOLS_PER_LEVEL = 3;
+
 	private Node<T> root;
 	private Comparator<T> comp;
 
@@ -269,5 +273,75 @@ public class TreeSet<T> extends AbstractCollection<T> implements Sorted<T> {
 			throw new NoSuchElementException();
 		}
 		return getLargestNode(root).obj;
+	}
+
+	public void displayTreeRotated() {
+		displayTreeRotated(root, 0);
+	}
+
+	private void displayTreeRotated(Node<T> node, int level) {
+		if (node != null) {
+			displayTreeRotated(node.right, level + 1);
+			displayRoot(node, level);
+			displayTreeRotated(node.left, level + 1);
+		}
+
+	}
+
+	private void displayRoot(Node<T> root, int level) {
+		System.out.printf("%s%s\n", SYMBOL.repeat(NUMBER_SYMBOLS_PER_LEVEL * level), root.obj);
+
+	}
+
+	public int height() {
+		return height(root);
+	}
+
+	private int height(Node<T> node) {
+		int res = 0;
+		if (node != null) {
+			int heightLeft = height(node.left);
+			int heightRight = height(node.right);
+			res = Math.max(heightLeft, heightRight) + 1;
+		}
+		return res;
+
+	}
+
+	public int width() {
+		return width(root);
+	}
+
+	private int width(Node<T> node) {
+		int res = 1;
+		if (!isLeaf(node)) {
+			int widthLeft = width(node.left);
+			int widthRight = width(node.right);
+			res = widthLeft + widthRight;
+		}
+		return res;
+	}
+
+	private boolean isLeaf(Node<T> node) {
+		return node.right == null && node.left == null;
+	}
+
+	public void inversion() {
+		comp = comp.reversed();
+		inversion(root);
+	}
+
+	private void inversion(Node<T> node) {
+		if (node != null) {
+			swapNodes(node);
+			inversion(node.right);
+			inversion(node.left);
+		}
+	}
+
+	private void swapNodes(Node<T> node) {
+		Node<T> temp = node.right;
+		node.right = node.left;
+		node.left = temp;
 	}
 }

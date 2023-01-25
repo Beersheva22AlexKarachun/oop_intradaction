@@ -1,5 +1,6 @@
 package telran.util.test;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -13,12 +14,14 @@ import org.junit.jupiter.api.Test;
 import telran.util.*;
 
 public class TreeSetTest extends SortedTest {
+	TreeSet<Integer> tree;
 
 	@BeforeEach
 	@Override
 	void setUp() throws Exception {
 		collection = new TreeSet<>();
 		super.setUp();
+		tree = (TreeSet<Integer>) collection;
 	}
 
 	@Test
@@ -35,6 +38,7 @@ public class TreeSetTest extends SortedTest {
 			Arrays.sort(arrayFromHash);
 			assertArrayEquals(treeSet.toArray(empty), arrayFromHash);
 		}
+
 	}
 
 	@Override
@@ -72,5 +76,45 @@ public class TreeSetTest extends SortedTest {
 			assertTrue(treeSet.toArray(empty).length == arrayFromHash.length);
 			assertArrayEquals(treeSet.toArray(empty), arrayFromHash);
 		}
+	}
+
+	@Test
+	void displayRotatatedTest() {
+		tree.displayTreeRotated();
+	}
+
+	@Test
+	void heightTreeTest() {
+		assertEquals(4, tree.height());
+	}
+
+	@Test
+	void widthTreeTest() {
+		assertEquals(4, tree.width());
+	}
+
+	@Test
+	void inversionTest() {
+		// {10, 100, -5, 134, 280, 120, 15};
+		tree.inversion();
+		Integer[] expected = { 280, 134, 120, 100, 15, 10, -5 };
+		Integer[] actual = new Integer[expected.length];
+		int index = 0;
+		for (Integer num : tree) {
+			actual[index++] = num;
+		}
+
+		assertArrayEquals(expected, actual);
+		assertArrayEquals(tree.toArray(actual), actual);
+
+		tree.inversion();
+		Arrays.sort(expected);
+		index = 0;
+
+		for (Integer num : tree) {
+			actual[index++] = num;
+		}
+		assertArrayEquals(expected, actual);
+		assertArrayEquals(tree.toArray(actual), actual);
 	}
 }
