@@ -86,11 +86,15 @@ public class TreeSetTest extends SortedTest {
 	@Test
 	void heightTreeTest() {
 		assertEquals(4, tree.height());
+		tree.clear();
+		assertEquals(0, tree.height());
 	}
 
 	@Test
 	void widthTreeTest() {
 		assertEquals(4, tree.width());
+		tree.clear();
+		assertEquals(0, tree.width());
 	}
 
 	@Test

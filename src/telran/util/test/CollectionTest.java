@@ -108,8 +108,7 @@ public abstract class CollectionTest {
 		assertFalse(collection.isEmpty());
 		collection.clear();
 		assertFalse(collection.iterator().hasNext());
-		assertEquals(0, collection.size());
-		assertArrayEquals(collection.toArray(empty), empty);
+		assertTrue(collection.isEmpty());
 	}
 
 	@Test

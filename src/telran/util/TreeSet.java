@@ -100,6 +100,14 @@ public class TreeSet<T> extends AbstractCollection<T> implements Sorted<T> {
 		return node.parent;
 	}
 
+	private boolean isLeaf(Node<T> node) {
+		return node.right == null && node.left == null;
+	}
+
+	private boolean isJunction(Node<T> node) {
+		return node.right != null && node.left != null;
+	}
+
 	private Node<T> getNextNode(Node<T> node) {
 		return node.right == null ? getGreaterParent(node) : getLeastNode(node.right);
 	}
@@ -141,55 +149,31 @@ public class TreeSet<T> extends AbstractCollection<T> implements Sorted<T> {
 
 	private void removeNode(Node<T> removed) {
 		size--;
-		if (removed == root) {
-			removeRoot();
-		} else if (removed.left != null && removed.right != null) {
-			removeNodeWithTwoChildren(removed);
+		if (isJunction(removed)) {
+			removeJunctionNode(removed);
 		} else {
-			removeLineNode(removed);
+			removeNonJunctionNode(removed);
 		}
+
 	}
 
-	private void removeRoot() {
-		if (root.left == null && root.right == null) {
-			root = null;
-		} else if (root.right == null || root.left == null) {
-			root = root.right != null ? root.right : root.left;
-			root.parent = null;
-		} else {
-			removeNodeWithTwoChildren(root);
-		}
+	private void removeJunctionNode(Node<T> removed) {
+		Node<T> substitute = getLargestNode(removed.left);
+		removed.obj = substitute.obj;
+		removeNonJunctionNode(substitute);
 	}
 
-	private void removeNodeWithTwoChildren(Node<T> removed) {
-		Node<T> least = getLeastNode(removed.right);
-		Node<T> parent = removed.parent;
-		removeLineNode(least);
-
-		least.parent = removed.parent;
-		least.left = removed.left;
-		least.right = removed.right;
-
-		removed.left.parent = least;
-		if (removed.right != null) {
-			removed.right.parent = least;
-		}
-		if (parent != null) {
-			if (comp.compare(parent.obj, removed.obj) > 0) {
-				parent.left = least;
-			} else {
-				parent.right = least;
-			}
-		}
-	}
-
-	private void removeLineNode(Node<T> removed) {
+	private void removeNonJunctionNode(Node<T> removed) {
 		Node<T> parent = removed.parent;
 		Node<T> child = removed.left != null ? removed.left : removed.right;
-		if (comp.compare(removed.obj, parent.obj) > 0) {
-			parent.right = child;
+		if (parent == null) {
+			root = child;
 		} else {
-			parent.left = child;
+			if (parent.left == removed) {
+				parent.left = child;
+			} else {
+				parent.right = child;
+			}
 		}
 		if (child != null) {
 			child.parent = parent;
@@ -285,12 +269,10 @@ public class TreeSet<T> extends AbstractCollection<T> implements Sorted<T> {
 			displayRoot(node, level);
 			displayTreeRotated(node.left, level + 1);
 		}
-
 	}
 
 	private void displayRoot(Node<T> root, int level) {
 		System.out.printf("%s%s\n", SYMBOL.repeat(NUMBER_SYMBOLS_PER_LEVEL * level), root.obj);
-
 	}
 
 	public int height() {
@@ -298,14 +280,7 @@ public class TreeSet<T> extends AbstractCollection<T> implements Sorted<T> {
 	}
 
 	private int height(Node<T> node) {
-		int res = 0;
-		if (node != null) {
-			int heightLeft = height(node.left);
-			int heightRight = height(node.right);
-			res = Math.max(heightLeft, heightRight) + 1;
-		}
-		return res;
-
+		return node != null ? Math.max(height(node.left), height(node.right)) + 1 : 0;
 	}
 
 	public int width() {
@@ -313,17 +288,15 @@ public class TreeSet<T> extends AbstractCollection<T> implements Sorted<T> {
 	}
 
 	private int width(Node<T> node) {
-		int res = 1;
-		if (!isLeaf(node)) {
-			int widthLeft = width(node.left);
-			int widthRight = width(node.right);
-			res = widthLeft + widthRight;
+		int res = 0;
+		if (node != null) {
+			if (isLeaf(node)) {
+				res = 1;
+			} else {
+				res = width(node.left) + width(node.right);
+			}
 		}
 		return res;
-	}
-
-	private boolean isLeaf(Node<T> node) {
-		return node.right == null && node.left == null;
 	}
 
 	public void inversion() {
