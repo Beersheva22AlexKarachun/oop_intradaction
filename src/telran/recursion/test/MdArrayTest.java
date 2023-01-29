@@ -38,7 +38,16 @@ class MdArrayTest {
 	@Test
 	void toArrayTest() {
 		Integer[] numberArray = new Integer[Arrays.stream(intDimensions).reduce((a, b) -> a * b).getAsInt()];
-		Arrays.fill(numberArray, intValue);
+		int index = 0;
+		for (int i = 0; i < intDimensions[0]; i++) {
+			for (int j = 0; j < intDimensions[1]; j++) {
+				for (int k = 0; k < intDimensions[2]; k++) {
+					int num = i + 1 * j + 1 * k + 1;
+					numbers.setValue(new int[] { i, j, k }, num);
+					numberArray[index++] = num;
+				}
+			}
+		}
 		assertArrayEquals(numbers.toArray(empty), numberArray);
 
 		Arrays.fill(ar, 10);
@@ -46,9 +55,7 @@ class MdArrayTest {
 		for (int i = 0; i < numberArray.length; i++) {
 			assertEquals(ar[i], numberArray[i]);
 		}
-		for (int i = numberArray.length; i < ar.length; i++) {
-			assertNull(ar[i]);
-		}
+		assertNull(ar[numberArray.length]);
 	}
 
 	@Test
@@ -61,7 +68,7 @@ class MdArrayTest {
 			}
 		}
 		assertEquals(strings.getValue(new int[] { 2, 5, 3, 1, 3 }), strValue);
-		
+
 		assertThrowsExactly(IllegalStateException.class, () -> numbers.getValue(new int[] { 3, 4 }));
 		assertThrowsExactly(NoSuchElementException.class, () -> numbers.getValue(new int[] { 3, 4, 6, 0 }));
 		assertThrowsExactly(ArrayIndexOutOfBoundsException.class, () -> numbers.getValue(new int[] { 3, 4, 7 }));

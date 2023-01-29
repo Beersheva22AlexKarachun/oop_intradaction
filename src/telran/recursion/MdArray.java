@@ -14,7 +14,7 @@ public class MdArray<T> {
 	}
 
 	@SuppressWarnings("unchecked")
-	public MdArray(int[] dimensions, int firstDim, T value) {
+	private MdArray(int[] dimensions, int firstDim, T value) {
 		if (firstDim == dimensions.length) {
 			this.value = value;
 			array = null;
@@ -32,7 +32,7 @@ public class MdArray<T> {
 	}
 
 	private void forEach(MdArray<T> currArray, Consumer<T> consumer) {
-		if (currArray.value != null) {
+		if (currArray.array == null) {
 			consumer.accept(currArray.value);
 		} else {
 			for (int i = 0; i < currArray.array.length; i++) {
@@ -43,18 +43,8 @@ public class MdArray<T> {
 
 	public T[] toArray(T[] ar) {
 		ArrayList<T> res = new ArrayList<>();
-		forEach(item -> res.add(item));
-
-		int size = res.size();
-		int i = 0;
-		if (ar.length < size) {
-			ar = Arrays.copyOf(ar, size);
-		}
-		for (T item : res) {
-			ar[i++] = item;
-		}
-		Arrays.fill(ar, size, ar.length, null);
-		return ar;
+		forEach(res::add);
+		return res.toArray(ar);
 	}
 
 	public T getValue(int[] route) {
@@ -71,18 +61,11 @@ public class MdArray<T> {
 			if (res.array == null) {
 				throw new NoSuchElementException();
 			}
-			checkIndex(num, 0, res.array.length - 1);
 			res = res.array[num];
 		}
-		if (res.value == null) {
+		if (res.array != null) {
 			throw new IllegalStateException();
 		}
 		return res;
-	}
-
-	private void checkIndex(int index, int min, int max) {
-		if (index < min || index > max) {
-			throw new ArrayIndexOutOfBoundsException();
-		}
 	}
 }
