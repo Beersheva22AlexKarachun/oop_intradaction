@@ -4,6 +4,10 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+import telran.util.absClasses.AbstractCollection;
+import telran.util.interfaces.Collection;
+import telran.util.interfaces.List;
+
 public class ArrayList<T> extends AbstractCollection<T> implements List<T> {
 	static final int DEFAULT_CAPACITY = 16;
 	private T[] array;

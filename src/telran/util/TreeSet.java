@@ -4,6 +4,10 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+import telran.util.absClasses.AbstractCollection;
+import telran.util.interfaces.Collection;
+import telran.util.interfaces.Sorted;
+
 public class TreeSet<T> extends AbstractCollection<T> implements Sorted<T> {
 	static private class Node<T> {
 		T obj;
@@ -316,5 +320,11 @@ public class TreeSet<T> extends AbstractCollection<T> implements Sorted<T> {
 		Node<T> temp = node.right;
 		node.right = node.left;
 		node.left = temp;
+	}
+
+	@Override
+	public T get(T item) {
+		Node<T> node = getNode(item);
+		return node != null && node.obj.equals(item) ? node.obj : null;
 	}
 }

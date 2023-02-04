@@ -3,6 +3,10 @@ package telran.util;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+import telran.util.absClasses.AbstractCollection;
+import telran.util.interfaces.Collection;
+import telran.util.interfaces.List;
+
 public class LinkedList<T> extends AbstractCollection<T> implements List<T> {
 	private static class Node<T> {
 		T obj;

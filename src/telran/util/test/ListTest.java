@@ -9,6 +9,7 @@ import java.util.NoSuchElementException;
 import org.junit.jupiter.api.BeforeEach;
 
 import telran.util.*;
+import telran.util.interfaces.List;
 
 public abstract class ListTest extends CollectionTest {
 	List<Integer> list;

@@ -1,4 +1,4 @@
-package telran.util;
+package telran.util.interfaces;
 
 import java.util.Arrays;
 import java.util.Iterator;

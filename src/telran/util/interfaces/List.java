@@ -1,4 +1,4 @@
-package telran.util;
+package telran.util.interfaces;
 
 public interface List<T> extends Collection<T> {
 	void add(int index, T element);

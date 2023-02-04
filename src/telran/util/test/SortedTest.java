@@ -11,7 +11,7 @@ import java.util.NoSuchElementException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import telran.util.Sorted;
+import telran.util.interfaces.Sorted;
 
 public abstract class SortedTest extends SetTest {
 	Sorted<Integer> sorted;

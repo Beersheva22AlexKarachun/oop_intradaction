@@ -1,4 +1,6 @@
-package telran.util;
+package telran.util.absClasses;
+
+import telran.util.interfaces.Collection;
 
 public abstract class AbstractCollection<T> implements Collection<T> {
 	protected int size;

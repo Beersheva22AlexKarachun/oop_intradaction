@@ -16,6 +16,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import telran.util.*;
+import telran.util.interfaces.Collection;
 
 public abstract class CollectionTest {
 	protected Random random = new Random();

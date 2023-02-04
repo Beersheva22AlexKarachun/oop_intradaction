@@ -10,6 +10,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import telran.util.*;
+import telran.util.interfaces.Set;
 
 public abstract class SetTest extends CollectionTest {
 	Set<Integer> set;

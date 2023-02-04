@@ -3,6 +3,11 @@ package telran.util;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+import telran.util.absClasses.AbstractCollection;
+import telran.util.interfaces.Collection;
+import telran.util.interfaces.List;
+import telran.util.interfaces.Set;
+
 public class HashSet<T> extends AbstractCollection<T> implements Set<T> {
 	private static final int DEFAULT_TABLE_SIZE = 16;
 	private static final float DEFAULT_FACTOR = 0.75f;
@@ -171,6 +176,22 @@ public class HashSet<T> extends AbstractCollection<T> implements Set<T> {
 			Iterator<T> it = other.iterator();
 			while (it.hasNext() && res) {
 				res = this.contains(it.next());
+			}
+		}
+		return res;
+	}
+
+	@Override
+	public T get(T pattern) {
+		T res = null;
+		List<T> list = hashTable[getHashIndex(pattern)];
+		if (list != null) {
+			T obj = null;
+			Iterator<T> it = list.iterator();
+			while (it.hasNext() && !isEqual((obj = it.next()), pattern)) {
+			}
+			if (isEqual(obj, pattern)) {
+				res = obj;
 			}
 		}
 		return res;

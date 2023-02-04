@@ -1,4 +1,4 @@
-package telran.util;
+package telran.util.interfaces;
 
 public interface Sorted<T> extends Set<T> {
 	T floor(T element); // returns greatest among elements less than element or equal

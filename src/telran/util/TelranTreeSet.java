@@ -4,6 +4,9 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+import telran.util.absClasses.AbstractCollection;
+import telran.util.interfaces.Sorted;
+
 public class TelranTreeSet<T> extends AbstractCollection<T> implements Sorted<T> {
 	static private class Node<T> {
 		T obj;

@@ -3,6 +3,8 @@ package telran.util;
 import java.util.Comparator;
 import java.util.Iterator;
 
+import telran.util.interfaces.Sorted;
+
 public class StandardTreeSet<T> implements Sorted<T> {
 	private java.util.TreeSet<T> tree;
 
@@ -63,6 +65,11 @@ public class StandardTreeSet<T> implements Sorted<T> {
 	@Override
 	public T last() {
 		return tree.last();
+	}
+
+	@Override
+	public T get(T item) {
+		throw new UnsupportedOperationException();
 	}
 
 }
