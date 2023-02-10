@@ -61,7 +61,7 @@ public interface Collection<T> extends Iterable<T> {
 			it.remove();
 		}
 	}
-
+	
 	default Stream<T> stream() {
 		return StreamSupport.stream(this.spliterator(), false);
 	}

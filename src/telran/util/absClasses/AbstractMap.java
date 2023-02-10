@@ -61,10 +61,10 @@ public abstract class AbstractMap<K, V> implements Map<K, V> {
 		return list;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public Set<K> keySet() {
 		try {
-			@SuppressWarnings("unchecked")
 			Set<K> res = set.getClass().getConstructor().newInstance();
 			set.forEach(x -> res.add(x.getKey()));
 			return res;
@@ -73,10 +73,10 @@ public abstract class AbstractMap<K, V> implements Map<K, V> {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public Set<Entry<K, V>> entrySet() {
 		try {
-			@SuppressWarnings("unchecked")
 			Set<Entry<K, V>> res = set.getClass().getConstructor().newInstance();
 			set.forEach(res::add);
 			return res;
